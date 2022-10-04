@@ -11,9 +11,9 @@ public class PlayerController : MonoBehaviour
     private UIManager uiManager;
     private GameManager gameManager;
 
-    public float mouseSens = 100f;
+    public float mouseSens;
     public float moveSpeed = 5f;
-    public bool mouseInvert = false;
+    public bool mouseInvert;
     private float gravity = 20f;
 
     private float cameraRotation = 0f;
@@ -42,6 +42,9 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         lastCarryPosition = carryProxy.transform.position;
         audioSource = GetComponent<AudioSource>(); 
+        mouseSens = PlayerPrefs.GetFloat("sensitivity", 100f);
+        mouseInvert = PlayerPrefs.GetInt("invert", 0) == 1 ? true : false;
+        Debug.Log("Invert mouse " + mouseInvert);
     }
 
     // Update is called once per frame
@@ -49,10 +52,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 moveVec = Vector3.zero;
 
-        if (Application.isEditor && Input.GetButtonDown("InputToggle")) {
-            inputActive = !inputActive;
-        }
-        else if (Application.isEditor && Input.GetButtonDown("Test")) {
+        if (Application.isEditor && Input.GetButtonDown("Test")) {
             gameManager.GameOver(true);
         }
 
@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
             float vertAxis = Input.GetAxis("Vertical");
             float horAxis = Input.GetAxis("Horizontal");
             
-            if (mouseInvert) {
+            if (!mouseInvert) {
                 inputY = -inputY;
             }
             cameraRotation += inputY;
